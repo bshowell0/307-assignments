@@ -85,7 +85,6 @@ app.post("/users", (req, res) => {
 });
 
 app.delete("/users/:id", (req, res) => {
-    console.log("In delete:", req.params.id);
     const id = req.params.id;
     const initialLength = users["users_list"].length;
     users["users_list"] = users["users_list"].filter(user => user.id !== id);

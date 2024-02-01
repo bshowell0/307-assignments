@@ -14,7 +14,6 @@ function MyApp() {
     // }
 
     function removeOneCharacter(id) {
-        console.log("removing: ", id);
         deleteUser(id)
             .then((response) => {
                 if (response.status === 204) {
