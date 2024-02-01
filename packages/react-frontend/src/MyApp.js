@@ -6,17 +6,48 @@ import Form from "./Form";
 function MyApp() {
     const [characters, setCharacters] = useState([]);
 
-    function removeOneCharacter(index) {
-        const updated = characters.filter((character, i) => {
-            return i !== index;
+    // function removeOneCharacter(index) {
+    //     const updated = characters.filter((character, i) => {
+    //         return i !== index;
+    //     });
+    //     setCharacters(updated);
+    // }
+
+    function removeOneCharacter(id) {
+        console.log("removing: ", id);
+        deleteUser(id)
+            .then((response) => {
+                if (response.status === 204) {
+                    const updated = characters.filter((character) => {
+                        return character.id !== id;
+                    });
+                    setCharacters(updated);
+                } else {
+                    console.log('User was not deleted. Status code: ', response.status);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    function deleteUser(id) {
+        return fetch(`http://localhost:8000/users/${id}`, {
+            method: 'DELETE',
         });
-        setCharacters(updated);
     }
 
     function updateList(person) {
         postUser(person)
-            .then(() => setCharacters([...characters, person]))
-            .catch((error) => {
+            .then((response) => {
+                if (response.status === 201) {
+                    return response.json();
+                } else {
+                    throw new Error("User was not added. Status code: " + response.status);
+                }
+            }).then((person) => {
+                setCharacters([...characters, person]);
+            }).catch((error) => {
                 console.log(error);
             })
     }

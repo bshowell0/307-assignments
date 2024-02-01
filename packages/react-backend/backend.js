@@ -79,8 +79,21 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
+    userToAdd.id = Math.floor(Math.random() * 1000000);
     addUser(userToAdd);
-    res.send();
+    res.status(201).send(userToAdd);
+});
+
+app.delete("/users/:id", (req, res) => {
+    console.log("In delete:", req.params.id);
+    const id = req.params.id;
+    const initialLength = users["users_list"].length;
+    users["users_list"] = users["users_list"].filter(user => user.id !== id);
+    if (users["users_list"].length === initialLength) {
+        res.status(404).send({ error: "User not found" });
+    } else {
+        res.status(204).send();
+    }
 });
 
 app.listen(port, () => {
